@@ -59,7 +59,7 @@
     </style>
 </head>
 <body>
-    <div id="header">全国范围2019年学校位置</div>
+    <div id="header">全国范围2019年学校位置与POI数据</div>
     <div id="basemapGalleryDiv">
         <div class="title">底图库</div> <!-- Title for the basemap gallery -->
         <div id="galleryContainer"></div> <!-- Container for basemap gallery items -->
@@ -80,8 +80,9 @@
             "esri/widgets/Legend",
             "esri/widgets/Search",
             "esri/widgets/LayerList",
-            "esri/core/Collection"
-        ], function(Map, MapView, FeatureLayer, BasemapGallery, CoordinateConversion, Bookmarks, ScaleBar, Legend, Search, LayerList, Collection) {
+            "esri/core/Collection",
+            "esri/widgets/Measurement" // 加载测量工具的模块
+        ], function(Map, MapView, FeatureLayer, BasemapGallery, CoordinateConversion, Bookmarks, ScaleBar, Legend, Search, LayerList, Collection, Measurement) {
             var map = new Map({
                 basemap: "streets-navigation-vector"
             });
@@ -93,11 +94,11 @@
                 center: [115, 35]
             });
 
-            var FeatureLayer = new FeatureLayer({
+            var featureLayer = new FeatureLayer({
                 url: "https://www.geosceneonline.cn/server/rest/services/Hosted/全国范围2019年学校POI数据/FeatureServer"
             });
 
-            map.add(FeatureLayer);
+            map.add(featureLayer);
 
             var basemapGallery = new BasemapGallery({
                 view: view,
@@ -116,15 +117,10 @@
             });
             view.ui.add(bookmarks, "top-right");
 
-   var layerList = new LayerList({
-                view: view
-            });
-            view.ui.add(layerList, "bottom-left");
-
             var scaleBar = new ScaleBar({
                 view: view
             });
-            view.ui.add(scaleBar, "bottom-left");
+            view.ui.add(scaleBar, "top-right");
 
             var legend = new Legend({
                 view: view
@@ -136,6 +132,16 @@
             });
             view.ui.add(searchWidget, "top-right");
 
+            var layerList = new LayerList({
+                view: view
+            });
+            view.ui.add(layerList, "bottom-left");
+
+            var measurementWidget = new Measurement({
+                view: view,
+                activeTool: "distance"
+            });
+            view.ui.add(measurementWidget, "top-right"); // 添加测量工具到界面的右上方
 
             document.getElementById('addBookmarkBtn').onclick = function() {
                 var bookmark = {
